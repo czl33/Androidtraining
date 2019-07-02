@@ -40,7 +40,7 @@ public class BaseFragment extends Fragment {
     }
 
     private int setLayoutID() {//获取布局文件的RId
-        return 0;
+        return 0 ;
     }
 
 }
