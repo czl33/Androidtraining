@@ -15,8 +15,8 @@ import android.widget.TextView;
  * author:czl
  */
 public class BaseFragment extends Fragment {
-    private FragmentActivity activity;//当前Activity
-    private String TAG;//标记名
+    protected FragmentActivity activity;//当前Activity
+    protected String TAG;//标记名
 
     @Override
     public void onAttach(Context context) {
@@ -39,8 +39,28 @@ public class BaseFragment extends Fragment {
         return view;
     }
 
-    private int setLayoutID() {//获取布局文件的RId
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {//声明周期函数在 activity创建好后在加载数据也就是在onViewCreated
+        super.onActivityCreated(savedInstanceState);
+        initData();//初始化数据
+    }
+
+    protected void initData() {//c初始化数据
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {//在创建好视图时加载fragment初始化视图
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);//初始化视图方法
+    }
+
+    protected int setLayoutID() {//获取布局文件的RId
         return 0 ;
+    }
+
+    protected void initView(View view){//初始化布局
+
     }
 
 }
