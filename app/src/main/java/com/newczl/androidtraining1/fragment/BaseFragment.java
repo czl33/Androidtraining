@@ -53,6 +53,7 @@ public class BaseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {//在创建好视图时加载fragment初始化视图
         super.onViewCreated(view, savedInstanceState);
         initView(view);//初始化视图方法
+
     }
 
     protected int setLayoutID() {//获取布局文件的RId

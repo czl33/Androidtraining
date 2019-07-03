@@ -39,6 +39,18 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<NewsBean,BaseViewHold
 
                 break;
             case 2:
+                helper.setText(R.id.textView,item.getNewsName());//设置标题名字
+                helper.setText(R.id.textView2,item.getNewsTypeName());//设置新闻类型
+                ImageView imageView1=helper.getView(R.id.imageView);//得到图片1视图
+                ImageView imageView2=helper.getView(R.id.imageView2);//得到图片2视图
+                ImageView imageView3=helper.getView(R.id.imageView3);//得到图片3视图
+                Glide.with(helper.itemView.getContext())//得到父容器的上下文
+                        .load(ConstantUtils.WEB_SITE+item.getImg1()).into(imageView1);//将图片1绑定到容器上
+                Glide.with(helper.itemView.getContext())//得到父容器的上下文
+                        .load(ConstantUtils.WEB_SITE+item.getImg2()).into(imageView2);//将图片2绑定到容器上
+                Glide.with(helper.itemView.getContext())//得到父容器的上下文
+                        .load(ConstantUtils.WEB_SITE+item.getImg3()).into(imageView3);//将图片3绑定到容器上
+
                 break;
         }
 

@@ -1,5 +1,6 @@
 package com.newczl.androidtraining1.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -39,6 +40,7 @@ public class MainActivity extends BaseActivity {
         data.add(new VideoFragment());//视频
         data.add(new MeFragment());//我
         viewPager.setAdapter(new MyFragmentStatePagerAdapter(getSupportFragmentManager(),data));//设置viewPager的适配器
+        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){//viewPager滑动监听，完成滑动改变底部导航菜单的状态
             @Override
             public void onPageSelected(int position) {
@@ -72,6 +74,12 @@ public class MainActivity extends BaseActivity {
             return false;
         }
     };
+    public void finish() {//重写finish，加入转场动画
+        //overridePendingTransition(0, R.anim.out_top2bottom);// 次数调用无效
+        super.finish();
+        overridePendingTransition(0, R.anim.anim_fade_out);//结束的动画
+    }
+
 
 
 
