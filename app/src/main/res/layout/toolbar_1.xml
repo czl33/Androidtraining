@@ -22,7 +22,8 @@
             android:layout_gravity="center"
             android:text="标题"
             android:textColor="#fff"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:maxLines="1"/>
     </android.support.v7.widget.Toolbar>
 
 

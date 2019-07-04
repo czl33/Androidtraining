@@ -6,33 +6,49 @@ import com.newczl.androidtraining1.bean.ConstellationBean;
 import com.newczl.androidtraining1.bean.NewsBean;
 import com.newczl.androidtraining1.bean.PythonBean;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.ParameterMetaData;
 import java.util.List;
 
 /**
  * json帮助类
  */
 public class JsonParseUtils {
-    private static Gson gson=new Gson();
 
-    public static List<NewsBean> getNewsList(String json){//解析新闻类json数据，返回一个集合新闻类
-        Type listType=new TypeToken<List<NewsBean>>(){}.getType();
+
+    public static <T>List<T> getList(Class<T> t,String json){//解析新闻类json数据，返回一个集合新闻类
+        Gson gson=new Gson();
+        Type listType=new MyParameterizedType(t);
         return gson.fromJson(json,listType);
     }
+    private  static class MyParameterizedType implements ParameterizedType{
 
-    public static List<NewsBean> getADList(String json){//解析广告类json数据，返回一个集合广告类
-        Type listType=new TypeToken<List<NewsBean>>(){}.getType();
-        return gson.fromJson(json,listType);
-    }
+        Class raw;
 
-    public static List<PythonBean> getPythonList(String json){//解析python类json数据，返回一个集合python类
-        Type listType=new TypeToken<List<PythonBean>>(){}.getType();
-        return gson.fromJson(json,listType);
-    }
+        public MyParameterizedType(Class raw) {
+            this.raw = raw;
+        }
 
-    public static List<ConstellationBean> getConstellationBeanList(String json){//解析星座类json数据，返回一个集合星座类
-        Type listType=new TypeToken<List<ConstellationBean>>(){}.getType();
-        return gson.fromJson(json,listType);
+        @NotNull
+        @Override
+        public Type[] getActualTypeArguments() {
+            return new Type[]{raw};
+        }
+
+
+        @NotNull
+        @Override
+        public Type getRawType() {
+            return List.class;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return null;
+        }
     }
 
 }

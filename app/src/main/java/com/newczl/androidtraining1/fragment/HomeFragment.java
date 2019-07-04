@@ -1,49 +1,51 @@
 package com.newczl.androidtraining1.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.ColorInt;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kongzue.dialog.interfaces.OnMenuItemClickListener;
 import com.kongzue.dialog.v3.BottomMenu;
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.activity.MainActivity;
+import com.newczl.androidtraining1.activity.NewsDetailActivity;
 import com.newczl.androidtraining1.adapter.HomeAdapter;
 import com.newczl.androidtraining1.bean.NewsBean;
 import com.newczl.androidtraining1.utils.ConstantUtils;
+import com.newczl.androidtraining1.utils.ImgUtils;
 import com.newczl.androidtraining1.utils.JsonParseUtils;
+import com.newczl.androidtraining1.utils.NetUtils;
 import com.newczl.androidtraining1.utils.PrefUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.wang.avi.AVLoadingIndicatorView;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.loader.ImageLoader;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+
 
 
 /**
@@ -56,10 +58,11 @@ public class HomeFragment extends BaseFragment {
     private HomeAdapter homeAdapter;//主页RecycleView的适配器
     private AVLoadingIndicatorView avi;//刷新动画
     public static RefreshLayout refreshLayout;//上拉刷新布局
-    //private TextView tintNet;//网络错误提示
+    private List<NewsBean> newslist;//全局的新闻列表信息
+    private Banner banner;//轮播图
+    private List<NewsBean> list_AD;//全局的广告新闻列表信息;
 
-
-    class MyHandle extends Handler {//消息处理
+    class  MyHandle extends Handler {//消息处理
         public static final int NEWS_OK=1;//新闻列表处理的类型
         public static final int NET_FAIL=2;//联网失败
         public static final int REF_FAIL=3;//刷新失败
@@ -69,17 +72,16 @@ public class HomeFragment extends BaseFragment {
             super.handleMessage(msg);
             switch (msg.what){
                 case NEWS_OK:
-                    List<NewsBean> newslist= JsonParseUtils.getNewsList((String) msg.obj);//将消息中的字符串转为列表数组
+                    newslist= JsonParseUtils.getList(NewsBean.class,(String) msg.obj);//将消息中的字符串转为列表数组
                     homeAdapter.setNewData(newslist);//将得到的数组列表存入适配器中
                     avi.hide();//隐藏
-//                    tintNet.setVisibility(View.GONE);//隐藏文字
                     break;
                 case NET_FAIL:
                     Toasty.error(activity, "请检查网络！", Toast.LENGTH_SHORT, true).show();//联网失败
                     avi.hide();//隐藏加载点
-//                    tintNet.setVisibility(View.VISIBLE);//显示网络错误
-                    View emptyView = LayoutInflater.from(activity).inflate(R.layout.emptyview, null, false);
+                    View emptyView = LayoutInflater.from(activity).inflate(R.layout.emptyview, null);
                     //实例化一个空布局
+                    homeAdapter.setHeaderAndEmpty(true);//适配器中没数据时展示头部
                     homeAdapter.setEmptyView(emptyView);//设置空布局
                     break;
                 case REF_FAIL:
@@ -88,13 +90,14 @@ public class HomeFragment extends BaseFragment {
                     avi.hide();//隐藏点
                     break;
                 case REF_OK:
-                    List<NewsBean> newlist= JsonParseUtils.getNewsList((String) msg.obj);//将消息中的字符串转为列表数组
-                    homeAdapter.setNewData(newlist);//将得到的数组列表存入适配器中
+                    newslist= JsonParseUtils.getList(NewsBean.class,(String) msg.obj);//将消息中的字符串转为列表数组
+                    homeAdapter.setNewData(newslist);//将得到的数组列表存入适配器中
                     avi.hide();//隐藏
-                    refreshLayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
+                    refreshLayout.finishRefresh(1500/*,false*/);//传入false表示刷新失败
                     Toasty.info(activity, "刷新成功!", Toast.LENGTH_SHORT, true).show();//吐司
 //                    tintNet.setVisibility(View.GONE);//隐藏文字
                     break;
+
             }
         }
     }
@@ -105,90 +108,98 @@ public class HomeFragment extends BaseFragment {
     @Override
     protected void initData() {//初始化数据
         super.initData();
-        getADData();//得到广告数据
-        getNewsData(true);//得到新闻列表数据
 
+        getNewsData(true);//得到新闻列表数据
+        getADData();//得到广告数据
 
     }
 
     private void getADData() {//得到广告数据
-    }
-
-    private void getNewsData(boolean first) {//得到新闻列表数据
-
-        OkHttpClient client=new OkHttpClient();//新建类
-        final Request request=new Request.Builder()
-                .url(ConstantUtils.REQUEST_NEWS_URL).build();//建立请求
-        Call call=client.newCall(request);//发起请求
-        final Message message=Message.obtain();//借用消息
-        if(!first){//不是第一次
-
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                Toasty.error(activity, "刷新成功!", Toast.LENGTH_SHORT, true).show();//吐司
-                    //数据池借用消息
-                    message.what=MyHandle.REF_FAIL;//发送失败消息
-                    myHandle.sendMessage(message);//发送消息
-
-                }
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    // Log.i(TAG, response.body().string());
-                    ResponseBody body = response.body();//获取请求的身体
-
-                    if(body!=null){//如果不为空
-                        String str=body.string();//将转换为字符串
-//                    Log.i(TAG, str);
-                        message.what=MyHandle.REF_OK;//告诉消息自己是做什么
-                        message.obj=str;//将刷新视图挂到obj上
-                        //message.arg1=refreshLayout;
-                        Timer timer=new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                myHandle.sendMessage(message);//发送消息，给myhandle处理
-                            }
-                        },1000);
-
-                    }
-                }
-            });
-
-
-        }else{//是第一次
-
-
-        call.enqueue(new Callback() {
+        NetUtils.getDataAsyn(ConstantUtils.REQUEST_AD_URL, new NetUtils.MyCallBack() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                Toasty.error(activity, "刷新成功!", Toast.LENGTH_SHORT, true).show();//吐司
-              //数据池借用消息
-                message.what=MyHandle.NET_FAIL;//发送失败消息
-                myHandle.sendMessage(message);//发送消息
+            public void onFailure() {
+
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-               // Log.i(TAG, response.body().string());
-                ResponseBody body = response.body();//获取请求的身体
+            public void onResponse(final String json) {
+                activity.runOnUiThread(new Runnable() {//运行在ui线程任务
+                    @Override
+                    public void run() {
+                       list_AD = JsonParseUtils.getList(NewsBean.class, json);//解析数据
+                        List<String> images=new ArrayList<>();//得到文字
+                        List<String> titles=new ArrayList<>();//得到标题
+                        for (NewsBean newsB: list_AD) {
+                            images.add(newsB.getImg1());//得到图片地址
+                            titles.add(newsB.getNewsName());//得到名字
+                        }
+                        banner.setImages(images);//存入图片地址数据
+                        banner.setBannerTitles(titles);//存入标题
+                        banner.setOnBannerListener(new OnBannerListener() {
+                            @Override
+                            public void OnBannerClick(int position) {
+                                Intent intent=new Intent(activity, NewsDetailActivity.class);//跳转链接
+                                intent.putExtra("url",list_AD.get(position).getNewsUrl());
+                                activity.startActivity(intent);//跳转
+                            }
+                        });//点击事件
+                        banner.start();
 
-                if(body!=null){//如果不为空
-                    String str=body.string();//将转换为字符串
-//                    Log.i(TAG, str);
-                    message.what=MyHandle.NEWS_OK;//告诉消息自己是做什么
-                    message.obj=str;//将数据挂到obj上
+
+                    }
+                });//
+            }
+        });
+
+
+    }
+
+    private void getNewsData(boolean first) {//得到新闻列表数据
+        final Message message=Message.obtain();//借用消息
+        if(!first){//不是第一次
+            NetUtils.getDataAsyn(ConstantUtils.REQUEST_NEWS_URL, new NetUtils.MyCallBack() {
+                @Override
+                public void onFailure() {
+                    message.what=MyHandle.REF_FAIL;//发送网络错误
+                    myHandle.sendMessage(message);//发送
+                }
+                @Override
+                public void onResponse(String json) {
+                    message.what=MyHandle.REF_OK;//告诉消息自己是做什么
+                    message.obj=json;//将刷新视图挂到obj上
+                    //message.arg1=refreshLayout;
                     Timer timer=new Timer();
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
                             myHandle.sendMessage(message);//发送消息，给myhandle处理
                         }
-                    },1000);
-
+                    },800);
                 }
-            }
-        });
+            });
+
+
+        }else{//是第一次
+            NetUtils.getDataAsyn(ConstantUtils.REQUEST_NEWS_URL, new NetUtils.MyCallBack() {
+                @Override
+                public void onFailure() {
+                    message.what=MyHandle.NET_FAIL;//发送失败消息
+                    myHandle.sendMessage(message);//发送消息
+                }
+
+                @Override
+                public void onResponse(String json) {
+                    message.what=MyHandle.NEWS_OK;//告诉消息自己是做什么
+                    message.obj=json;//将数据挂到obj上
+                    Timer timer=new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            myHandle.sendMessage(message);//发送消息，给myhandle处理
+                        }
+                    },800);
+                }
+            });
         }
 
 
@@ -209,16 +220,13 @@ public class HomeFragment extends BaseFragment {
             }
         });
 
-
-
         TextView textView=view.findViewById(R.id.title);//找到工具栏标题
         textView.setText("首页");//设置工具栏标题
 
-//        tintNet=view.findViewById(R.id.tintNet);//网络错误提示
-//        tintNet.bringToFront();//设置顶层
 
         avi = view.findViewById(R.id.avi);//找到全局的点点
         avi.bringToFront();//设置最顶层
+
 
         refreshLayout =view.findViewById(R.id.refreshLayout);//找到刷新布局
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {//刷新回调
@@ -229,12 +237,13 @@ public class HomeFragment extends BaseFragment {
 //              Toasty.info(activity, "刷新成功!", Toast.LENGTH_SHORT, true).show();//吐司
                 avi.show();//显示小球
                 getNewsData(false);//重新请求一次服务器
+                getADData();
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {//加载更多回调
             @Override
             public void onLoadMore(@NotNull RefreshLayout refreshlayout) {//加载更多回调
-              refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+              refreshlayout.finishLoadMore(1000/*,false*/);//传入false表示加载失败
                 //loadMoad();//像服务器加载更多数据
             }
         });
@@ -244,9 +253,53 @@ public class HomeFragment extends BaseFragment {
         homeAdapter.openLoadAnimation();//加载动画
         homeAdapter.isFirstOnly(false);//是否只执行一次
 
+        View headview=LayoutInflater.from(activity).inflate(R.layout.head_home,null);//实例化头布局
+
+        homeAdapter.setHeaderView(headview);//设置头部内容
+
+        homeAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {//设置每一项的点击监听事件
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent=new Intent(activity, NewsDetailActivity.class);//跳转链接
+                intent.putExtra("url",newslist.get(position).getNewsUrl());
+                activity.startActivity(intent);//跳转
+            }
+        });
+
         recyclerView.setAdapter(homeAdapter);//给RecycleView设置适配器
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));//设置线性布局管理器
         myHandle=new MyHandle();//初始化消息处理类
+
+        banner=headview.findViewById(R.id.banner);//从头布局中找到轮播图
+        banner.setImageLoader(new ImageLoader() {//图片的加载器
+            @Override
+            public void displayImage(Context context, Object path, ImageView imageView) {
+                if(path instanceof String){//传进来的是地址
+                    ImgUtils.setImage(context,ConstantUtils.WEB_SITE+(String) path,imageView);
+                }
+                if(path instanceof Integer){//传进来的是id
+                    imageView.setImageResource((Integer) path);
+
+                }
+            }
+        });
+
+        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);//添加图片轮播的样式，是否显示文字
+        ArrayList<Integer> images=new ArrayList<>();//默认图片地址
+        ArrayList<String> titles=new ArrayList<>();//默认带文字
+
+        for (int i = 0; i <3 ; i++) {
+            images.add(R.drawable.pic_item_list_default);
+            titles.add("第"+i+"个标题");
+        }
+        banner.setDelayTime(2000);//设置延迟时间
+        banner.setImages(images);//设置图片
+        banner.setBannerTitles(titles);//设置标题
+        banner.setBannerAnimation(Transformer.CubeOut);//设置轮播图动画
+        banner.start();//开始轮播
+
+
+
 
     }
 
@@ -274,6 +327,7 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void loadMoad() {//加载更多数据
+
     }
 
     @Override

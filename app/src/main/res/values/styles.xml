@@ -10,14 +10,14 @@
 
 
     <style name="theme_org" parent="AppTheme">
-        <item name="colorPrimary">#E09928</item>
-        <item name="colorPrimaryDark">#FFB700</item>
+        <item name="colorPrimary">#FFB700</item>
+        <item name="colorPrimaryDark">#E09928</item>
         <item name="colorAccent">#80ee9c18</item>
     </style>
 
     <style name="theme_grass" parent="AppTheme">
-        <item name="colorPrimary">#66CF4E</item>
-        <item name="colorPrimaryDark">#2BFF00</item>
+        <item name="colorPrimary">#2BC00A</item>
+        <item name="colorPrimaryDark">#51B639</item>
         <item name="colorAccent">#8063d64a</item>
     </style>
 
