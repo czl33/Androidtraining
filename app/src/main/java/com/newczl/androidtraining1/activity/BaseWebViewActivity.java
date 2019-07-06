@@ -18,6 +18,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity {
 
     private String TAG;//当前Activity的信息
     protected Toolbar  toolbar;//工具栏
+    private boolean isShow;//是否显示过菜单
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,16 +32,18 @@ public abstract class BaseWebViewActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        toolbar=findViewById(R.id.toolbars);//找到工具栏
-        toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp);//设置导航按钮
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();//关闭页面
-            }
-        });
-
-        menuHandle();//菜单的操作在这里执行
+        if(!isShow) {
+            toolbar = findViewById(R.id.toolbars);//找到工具栏
+            toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp);//设置导航按钮
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();//关闭页面
+                }
+            });
+            menuHandle();//菜单的操作在这里执行
+            isShow=true;
+        }
     }
 
     protected abstract void menuHandle();//菜单实例化操作

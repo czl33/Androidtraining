@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.kongzue.dialog.v3.BottomMenu;
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.activity.MainActivity;
 import com.newczl.androidtraining1.activity.NewsDetailActivity;
+import com.newczl.androidtraining1.activity.homeDetail.PythonActivity;
 import com.newczl.androidtraining1.adapter.HomeAdapter;
 import com.newczl.androidtraining1.bean.NewsBean;
 import com.newczl.androidtraining1.utils.ConstantUtils;
@@ -298,7 +300,14 @@ public class HomeFragment extends BaseFragment {
         banner.setBannerAnimation(Transformer.CubeOut);//设置轮播图动画
         banner.start();//开始轮播
 
-
+        LinearLayout pythonlist=headview.findViewById(R.id.python_list);//找python的线性布局
+        pythonlist.setOnClickListener(new View.OnClickListener() {//设置点击监听
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, PythonActivity.class);//跳转至python
+                activity.startActivity(intent);//跳转
+            }
+        });
 
 
     }

@@ -3,12 +3,15 @@ package com.newczl.androidtraining1.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.WebChromeClient;
@@ -23,6 +26,7 @@ import com.newczl.androidtraining1.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 
 public class NewsDetailActivity extends BaseWebViewActivity {
     private AgentWeb mAgentWeb;//视图
@@ -92,7 +96,7 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                                         DialogKl(2);//分享
                                         break;
 //                                    case 5:
-//                                        DialogKl(2);//分享
+//                                        DialogKl(3);//收藏
 //                                        break;
                                 }
                             }
@@ -104,6 +108,14 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(mAgentWeb.handleKeyEvent(keyCode,event)){
+            return true;//中断掉
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void DialogKl(int s) {//反射代码
@@ -130,6 +142,20 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                 ShareDialog.show(NewsDetailActivity.this, itemList, new ShareDialog.OnItemClickListener() {
                     @Override
                     public boolean onClick(ShareDialog shareDialog, int index, ShareDialog.Item item) {
+                        switch (index){
+                            case 0:
+                                Toasty.success(NewsDetailActivity.this,"QQ功能待完善。", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 1:
+                                Toasty.success(NewsDetailActivity.this,"WX功能待完善。", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 2:
+                                Toasty.success(NewsDetailActivity.this,"WEIBO功能待完善。", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 3:
+                                Toasty.success(NewsDetailActivity.this,"备忘录功能待完善。", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                         return false;
                     }
                 });
