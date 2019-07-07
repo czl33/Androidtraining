@@ -98,7 +98,7 @@ public class JavaLineChartActivity extends BaseWebViewActivity {
         yAxis.addLimitLine(limitLine);
         Description desc = new Description();
         desc.setText("Java工程师工作经验对应的薪资情况");
-        desc.setPosition(600,50);
+        desc.setPosition(500,50);
         desc.setTextAlign(Paint.Align.CENTER);
         desc.setTextSize(16f);
         chart.setDescription(desc);

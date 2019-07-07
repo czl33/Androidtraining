@@ -34,8 +34,14 @@
         </activity>
         <activity android:name=".activity.NewsDetailActivity"/>
         <activity android:name=".activity.homeDetail.PythonActivity"/>
+
         <activity android:name=".activity.chart.JavaLineChartActivity"/>
         <activity android:name=".activity.chart.UIPieChartActivity"/>
+        <activity android:name=".activity.chart.CCandleStickChartActivity"/>
+        <activity android:name=".activity.chart.PythonChartActivity"/>
+        <activity android:name=".activity.chart.IOSChartActivity"/>
+
+
     </application>
 
 </manifest>

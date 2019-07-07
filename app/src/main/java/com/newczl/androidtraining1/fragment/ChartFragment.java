@@ -6,7 +6,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.newczl.androidtraining1.R;
+import com.newczl.androidtraining1.activity.chart.CCandleStickChartActivity;
+import com.newczl.androidtraining1.activity.chart.IOSChartActivity;
 import com.newczl.androidtraining1.activity.chart.JavaLineChartActivity;
+import com.newczl.androidtraining1.activity.chart.PythonChartActivity;
 import com.newczl.androidtraining1.activity.chart.UIPieChartActivity;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
 import com.nightonke.boommenu.BoomButtons.TextInsideCircleButton;
@@ -57,12 +60,18 @@ public class ChartFragment extends BaseFragment {
 
                                     break;
                                 case 3://Python
-//                                    Intent intent3=new Intent(activity,PythonLineChartActivity.class);//Python
-//                                    activity.startActivity(intent3);
+                                    Intent intent3=new Intent(activity, PythonChartActivity.class);//Python
+                                    activity.startActivity(intent3);
                                     break;
                                 case 4://C/C++
+                                    Intent intent4=new Intent(activity, CCandleStickChartActivity.class);//C
+                                    activity.startActivity(intent4);
                                     break;
-                                case 6://前端
+                                case 5://IOS
+                                    Intent intent5=new Intent(activity, IOSChartActivity.class);//IOS
+                                    activity.startActivity(intent5);
+                                    break;
+                                case 6://UI
                                     Intent intent6=new Intent(activity, UIPieChartActivity.class);//Ui
                                     activity.startActivity(intent6);
                                     break;
