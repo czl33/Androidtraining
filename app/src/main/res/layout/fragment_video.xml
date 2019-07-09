@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_scrollFlags="scroll">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbars"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_scrollFlags="scroll"
+            >
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="标题"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                android:maxLines="1"/>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!--加载的小圆点-->
+    <com.wang.avi.AVLoadingIndicatorView
+    android:id="@+id/avi"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:indicatorName="LineSpinFadeLoaderIndicator"
+    style="@style/AVLoadingIndicatorView"
+    android:visibility="visible"
+        android:layout_gravity="center"
+    />
+    <!--app:layout_constraintBottom_toBottomOf="@+id/refreshLayout"-->
+    <!--app:layout_constraintEnd_toEndOf="@+id/refreshLayout"-->
+    <!--app:layout_constraintStart_toStartOf="@+id/refreshLayout"-->
+    <!--app:layout_constraintTop_toTopOf="@+id/include"-->
+    <!--app:indicatorColor="?attr/colorPrimary"-->
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srlAccentColor="?attr/colorPrimaryDark"
+        app:srlEnablePreviewInEditMode="true"
+        app:srlPrimaryColor="?attr/colorPrimary"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <!--srlAccentColor srlPrimaryColor 将会改变 Header 和 Footer 的主题颜色-->
+        <!--srlEnablePreviewInEditMode 可以开启和关闭预览功能-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/include"-->
+        <!--app:layout_constraintVertical_bias="0.0"-->
+        <com.scwang.smartrefresh.header.FunGameBattleCityHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

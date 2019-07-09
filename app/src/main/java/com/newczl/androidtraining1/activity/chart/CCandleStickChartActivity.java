@@ -1,11 +1,10 @@
 package com.newczl.androidtraining1.activity.chart;
 
 import android.graphics.Color;
-import android.graphics.ColorSpace;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.View;
+import androidx.annotation.Nullable;
+
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
@@ -15,8 +14,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.interfaces.datasets.ICandleDataSet;
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.activity.BaseWebViewActivity;

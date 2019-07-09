@@ -1,17 +1,14 @@
 package com.newczl.androidtraining1.activity.chart;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuItemCompat;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BubbleChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -20,7 +17,6 @@ import com.github.mikephil.charting.data.BubbleDataSet;
 import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.activity.BaseWebViewActivity;
 import com.newczl.androidtraining1.provider.chartProvider;

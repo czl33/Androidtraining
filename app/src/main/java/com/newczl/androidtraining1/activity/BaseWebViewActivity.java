@@ -1,9 +1,9 @@
 package com.newczl.androidtraining1.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +18,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity {
 
     private String TAG;//当前Activity的信息
     protected Toolbar  toolbar;//工具栏
-    private boolean isShow;//是否显示过菜单
+    public boolean isShow;//是否显示过菜单
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

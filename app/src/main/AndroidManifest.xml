@@ -41,6 +41,11 @@
         <activity android:name=".activity.chart.PythonChartActivity"/>
         <activity android:name=".activity.chart.IOSChartActivity"/>
 
+        <!--视频播放页面-->
+        <activity android:name=".activity.VideoDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
 
     </application>
 
