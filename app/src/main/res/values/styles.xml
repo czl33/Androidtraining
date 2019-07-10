@@ -10,15 +10,24 @@
 
 
     <style name="theme_org" parent="AppTheme">
-        <item name="colorPrimary">#FFB700</item>
-        <item name="colorPrimaryDark">#E09928</item>
+        <item name="colorPrimary">#F89700</item>
+        <item name="colorPrimaryDark">#D39A0E</item>
         <item name="colorAccent">#80ee9c18</item>
     </style>
 
     <style name="theme_grass" parent="AppTheme">
-        <item name="colorPrimary">#2BC00A</item>
-        <item name="colorPrimaryDark">#51B639</item>
+        <item name="colorPrimary">#30F306</item>
+        <item name="colorPrimaryDark">#52E230</item>
         <item name="colorAccent">#8063d64a</item>
     </style>
+    <style name="MyExpanded" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+    <style name="MyCollapsed" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+
 
 </resources>

@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.newczl.androidtraining1.R;
@@ -14,6 +16,7 @@ import com.newczl.androidtraining1.fragment.ChartFragment;
 import com.newczl.androidtraining1.fragment.HomeFragment;
 import com.newczl.androidtraining1.fragment.MeFragment;
 import com.newczl.androidtraining1.fragment.VideoFragment;
+import com.newczl.androidtraining1.view.MainViewPager;
 
 import java.util.ArrayList;
 /**
@@ -21,7 +24,7 @@ import java.util.ArrayList;
  * author:czl
  */
 public class MainActivity extends BaseActivity {
-    private ViewPager viewPager;//Fragment的切换
+    private MainViewPager viewPager;//Fragment的切换
     private BottomNavigationView navigation;//底部导航栏
 
     @Override
@@ -30,6 +33,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);//设置布局
         navigation = findViewById(R.id.navigation);//底部导航栏
         viewPager=findViewById(R.id.viewPager);//找到viewPager
+        boolean toggle = getIntent().getBooleanExtra("toggle", false);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);//设置底部导航栏按钮事件。meun在布局设置
         ArrayList<BaseFragment> data=new ArrayList<>();//导航栏数据集合
         data.add(new HomeFragment());//主页
@@ -37,7 +41,7 @@ public class MainActivity extends BaseActivity {
         data.add(new VideoFragment());//视频
         data.add(new MeFragment());//我
         viewPager.setAdapter(new MyFragmentStatePagerAdapter(getSupportFragmentManager(),data));//设置viewPager的适配器
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(4);//缓存数量为4个页面
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){//viewPager滑动监听，完成滑动改变底部导航菜单的状态
             @Override
             public void onPageSelected(int position) {
@@ -45,6 +49,10 @@ public class MainActivity extends BaseActivity {
                 navigation.getMenu().getItem(position).setChecked(true);//设置当前位置的菜单为点击状态
             }
         });
+       // Log.i("www2", "onCreate: "+toggle);
+        if(toggle){
+            viewPager.setCurrentItem(3);
+        }
     }
 
 

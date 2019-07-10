@@ -20,7 +20,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation" />
 
-    <androidx.viewpager.widget.ViewPager
+    <com.newczl.androidtraining1.view.MainViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
