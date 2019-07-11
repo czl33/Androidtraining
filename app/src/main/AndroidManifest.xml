@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <!--保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:usesCleartextTraffic="true"
         android:name=".MyApp"
@@ -81,6 +82,16 @@
             android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
+
+        <!--/菜单设置-->
+        <activity android:name=".activity.UserInfoActivity"/>
+        <activity android:name=".activity.TextEditActivity"/>
+
+        <!--日历-->
+        <activity android:name=".activity.CalendarActivity"/>
+        <!--收藏-->
+        <activity android:name=".activity.StarActivity"/>
     </application>
 
 </manifest>

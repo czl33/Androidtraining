@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.bean.User;
 
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -52,6 +53,13 @@ public class RegisterActivity extends BaseWebViewActivity {
         user.setUsername(userName);
         user.setPassword(password);
         user.setEmail(email);
+
+        user.setNickName("无").setSex(false).setInfo("这家伙很懒什么都没有留下。");
+        BmobFile bf=new BmobFile("timg.jpg","","http://cc.newczl.cn/2019/07/10/e8179c9b40d278cf809e917e75096b75.jpg");
+
+        //bf.setUrl("http://cc.newczl.cn/2019/07/10/e8179c9b40d278cf809e917e75096b75.jpg");
+        user.setHeadImage(bf);
+
         user.signUp(new SaveListener<User>() {
             @Override
             public void done(User user, BmobException e) {

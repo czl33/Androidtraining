@@ -21,21 +21,27 @@ import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.BottomMenu;
 import com.kongzue.dialog.v3.InputDialog;
 import com.kongzue.dialog.v3.ShareDialog;
+import com.newczl.androidtraining1.DB.Bean.Star;
+import com.newczl.androidtraining1.DB.starDB;
 import com.newczl.androidtraining1.R;
+import com.newczl.androidtraining1.bean.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.BmobUser;
 import es.dmoral.toasty.Toasty;
 
 public class NewsDetailActivity extends BaseWebViewActivity {
     private AgentWeb mAgentWeb;//视图
+    private TextView textView;
+    private starDB stardb;//数据库
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsdetail);//存入视图
-        final TextView textView=findViewById(R.id.title);
+        textView=findViewById(R.id.title);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +80,7 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                         mAgentWeb.getWebCreator().getWebView().reload();//刷新页面
                         break;
                     case R.id.more://更多
-                        BottomMenu.show(NewsDetailActivity.this, new String[]{"重定向网址", "前进", "后退","刷新","分享"}, new OnMenuItemClickListener() {
+                        BottomMenu.show(NewsDetailActivity.this, new String[]{"重定向网址", "前进", "后退","刷新","收藏","分享"}, new OnMenuItemClickListener() {
                             @Override
                             public void onClick(String text, int index) {
                                 //返回参数 text 即菜单名称，index 即菜单索引
@@ -93,11 +99,11 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                                         mAgentWeb.getWebCreator().getWebView().reload();//刷新页面
                                         break;
                                     case 4:
+                                        DialogKl(3);//收藏
+                                        break;
+                                    case 5:
                                         DialogKl(2);//分享
                                         break;
-//                                    case 5:
-//                                        DialogKl(3);//收藏
-//                                        break;
                                 }
                             }
                         });
@@ -161,10 +167,35 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                 });
                 break;
             case 3://收藏
-
+                    if(BmobUser.isLogin()){
+                        User currentUser = BmobUser.getCurrentUser(User.class);
+                        String username = currentUser.getUsername();
+                        String url= mAgentWeb.getWebCreator().getWebView().getUrl();
+                        String text = textView.getText().toString();
+                        Star star=new Star(text,url,username);
+                        long insert=stardb.insert(star);
+                        if(insert!=-1){
+                            Toasty.success(NewsDetailActivity.this,"添加成功。", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toasty.error(NewsDetailActivity.this,"请先登录在使用收藏功能。", Toast.LENGTH_SHORT).show();
+                    }
                 break;
 
         }
 
     }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        stardb = new starDB(this,"star.db");
+        stardb.open();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        stardb.close();
+    }
+
 }

@@ -70,5 +70,8 @@ dependencies {
     implementation 'com.squareup.okio:okio:2.2.2'
     implementation 'com.google.code.gson:gson:2.8.5'
 
-    implementation files('libs/open_sdk_r6019_lite.jar')
+    implementation files('libs/open_sdk_r6019_lite.jar')//qq互联
+    implementation 'com.droidninja:filepicker:2.2.1'//图片选中器
+
+    implementation  'com.github.idic779:monthweekmaterialcalendarview:1.7'//日历
 }

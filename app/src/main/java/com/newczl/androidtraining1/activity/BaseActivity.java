@@ -22,7 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        int theme = PrefUtil.getint(this, "theme", R.style.theme_grass);//设置默认主题
+        int theme = PrefUtil.getint(this, "theme", R.style.AppTheme);//设置默认主题
         setTheme(theme);
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);//没有标题栏

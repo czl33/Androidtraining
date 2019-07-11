@@ -1,0 +1,56 @@
+package com.newczl.androidtraining1.DB.Bean;
+
+import java.util.Date;
+
+public class Star {
+
+    public Star(String name, String url, String createP) {
+        this.name = name;
+        this.url = url;
+        this.createP = createP;
+    }
+
+    public Star(int id, String name, String url, String createP) {
+        this.id = id;
+        this.name = name;
+        this.url = url;
+        this.createP = createP;
+    }
+
+    private int id;//id
+    private String name;
+    private String url;
+    private String createP;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getCreateP() {
+        return createP;
+    }
+
+    public void setCreateP(String createP) {
+        this.createP = createP;
+    }
+}
