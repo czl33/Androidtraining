@@ -72,24 +72,33 @@ public class StarActivity extends AppCompatActivity {
 
         User currentUser = BmobUser.getCurrentUser(User.class);
         String username = currentUser.getUsername();//获得局部变量
-        textView.setText(username+"的收藏夹");
+        textView.setText(currentUser.getNickName()+"的收藏夹");
         recyclerView=findViewById(R.id.recyclerView);//recycleView
         data=new ArrayList<>();
-        Cursor cursor = stardb.queryByCP(username);//根据名字查找记录
+        Cursor cursor = null;//根据名字查找记录
        // Cursor cursor = stardb.queryAll();//根据名字查找记录
-        if (cursor.getCount()>0){
-            while (cursor.moveToNext()){
-                int id = cursor.getInt(cursor.getColumnIndex("id"));
-                String name = cursor.getString(cursor.getColumnIndex("name"));
-                String url = cursor.getString(cursor.getColumnIndex("url"));
-                String createP = cursor.getString(cursor.getColumnIndex("createP"));
-                data.add(new Star(id,name,url,createP));
+        try {
+            cursor = stardb.queryByCP(username);
+            if (cursor.getCount()>0){
+                while (cursor.moveToNext()){
+                    int id = cursor.getInt(cursor.getColumnIndex("id"));
+                    String name = cursor.getString(cursor.getColumnIndex("name"));
+                    String url = cursor.getString(cursor.getColumnIndex("url"));
+                    String createP = cursor.getString(cursor.getColumnIndex("createP"));
+                    int videoId = cursor.getInt(cursor.getColumnIndex("videoId"));
+                    int type = cursor.getInt(cursor.getColumnIndex("type"));
+                    data.add(new Star(id,name,url,createP,videoId,type));
+                }
+            }
+        }finally {
+            if(cursor != null){
+                cursor.close();
             }
         }
 
-
-        sa=new starAdapter(R.layout.star_item,data);//数据填入
-
+        sa=new starAdapter(data);//数据填入
+        sa.openLoadAnimation();
+        sa.isFirstOnly(false);
         recyclerView.setAdapter(sa);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -106,9 +115,14 @@ public class StarActivity extends AppCompatActivity {
         sa.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent=new Intent(StarActivity.this,NewsDetailActivity.class);
-                intent.putExtra("url",data.get(position).getUrl());//获取链接进行传递。
-                startActivity(intent);//跳转
+                if(data.get(position).itemType==Star.VIDEO){
+                    Toasty.info(StarActivity.this,"暂时无法跳转视频",Toasty.LENGTH_SHORT).show();
+                }else{
+                    Intent intent=new Intent(StarActivity.this,NewsDetailActivity.class);
+                    intent.putExtra("url",data.get(position).getUrl());//获取链接进行传递。
+                    startActivity(intent);//跳转
+                }
+
             }
         });
 
@@ -148,7 +162,9 @@ public class StarActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume()
+    {   stardb = new starDB(this,"star.db");//数据库
+        stardb.open();//开启数据库
         super.onResume();
     }
 

@@ -1,5 +1,6 @@
 package com.newczl.androidtraining1.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.newczl.androidtraining1.activity.BaseWebViewActivity;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
+import es.dmoral.toasty.Toasty;
 
 public class FindPasswordActivity extends BaseWebViewActivity {
 
@@ -39,12 +41,17 @@ public class FindPasswordActivity extends BaseWebViewActivity {
             @Override
             public void done(BmobException e) {
                 if (e == null){
-                    Snackbar.make(view ,"重置密码请求成功，请到" + email
-                            + "邮箱进行密码重置操作",Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(view ,"重置密码请求成功，请到" + email
+//                            + "邮箱进行密码重置操作",Snackbar.LENGTH_LONG).show();
+                    Intent intent=new Intent(FindPasswordActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                    Toasty.info(FindPasswordActivity.this,"发送成功，注意查收",Toasty.LENGTH_SHORT).show();
+
                 }else {
                     Log.e("BMOB",e.toString());
                     Snackbar.make(view ,e.getMessage(),Snackbar.LENGTH_LONG).show();
                 }
+
             }
         });
     }

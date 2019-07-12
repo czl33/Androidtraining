@@ -21,12 +21,16 @@ import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.BottomMenu;
 import com.kongzue.dialog.v3.InputDialog;
 import com.kongzue.dialog.v3.ShareDialog;
+import com.newczl.androidtraining1.DB.Bean.History;
 import com.newczl.androidtraining1.DB.Bean.Star;
 import com.newczl.androidtraining1.DB.starDB;
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.bean.User;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.bmob.v3.BmobUser;
@@ -36,6 +40,7 @@ public class NewsDetailActivity extends BaseWebViewActivity {
     private AgentWeb mAgentWeb;//视图
     private TextView textView;
     private starDB stardb;//数据库
+    private String  url;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +53,9 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                 DialogKl(1);
             }
         });
-        String url=getIntent().getStringExtra("url");
+        url=getIntent().getStringExtra("url");
+        stardb = new starDB(this,"star.db");//数据库
+        stardb.open();//开启数据库
         LinearLayout linearLayout=findViewById(R.id.linearLayout);//找到线性布局
         mAgentWeb=AgentWeb.with(this)
                 .setAgentWebParent(linearLayout,
@@ -59,11 +66,18 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                     public void onReceivedTitle(WebView view, String title) {
                         super.onReceivedTitle(view, title);
                         textView.setText(title);
+                            SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" );
+                            stardb.insertHis(new History(textView.getText().toString(),mAgentWeb.getWebCreator().getWebView().getUrl(),sdf.format(new Date())));
+
                     }
                 })
                 .createAgentWeb()
                 .ready()
                 .go(url);
+
+        //String format = DateFormat.getDateTimeInstance().format(new Date());
+        //添加入历史记录
+
     }
 
 
@@ -172,10 +186,12 @@ public class NewsDetailActivity extends BaseWebViewActivity {
                         String username = currentUser.getUsername();
                         String url= mAgentWeb.getWebCreator().getWebView().getUrl();
                         String text = textView.getText().toString();
-                        Star star=new Star(text,url,username);
+                        Star star=new Star(text,url,username,-1,Star.NEWS);
                         long insert=stardb.insert(star);
                         if(insert!=-1){
                             Toasty.success(NewsDetailActivity.this,"添加成功。", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toasty.error(NewsDetailActivity.this,"添加失败。", Toast.LENGTH_SHORT).show();
                         }
                     }else{
                         Toasty.error(NewsDetailActivity.this,"请先登录在使用收藏功能。", Toast.LENGTH_SHORT).show();

@@ -19,7 +19,6 @@ import es.dmoral.toasty.Toasty;
 public abstract class BaseActivity extends AppCompatActivity {
     private String TAG;//当前Activity的信息
     private long exitTime;//退出的时间，默认为0
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         int theme = PrefUtil.getint(this, "theme", R.style.AppTheme);//设置默认主题
@@ -28,7 +27,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);//没有标题栏
         TAG=getClass().getSimpleName();//打印log时使用的标记
     }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode==KeyEvent.KEYCODE_BACK){//按下返回键
@@ -43,6 +41,4 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
 }

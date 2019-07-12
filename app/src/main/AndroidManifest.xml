@@ -14,6 +14,10 @@
     <!--保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+
+
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application
         android:usesCleartextTraffic="true"
         android:name=".MyApp"
@@ -92,6 +96,18 @@
         <activity android:name=".activity.CalendarActivity"/>
         <!--收藏-->
         <activity android:name=".activity.StarActivity"/>
+        <!--生成二维码-->
+        <activity android:name=".activity.QrActivity"/>
+        <!--历史几率-->
+        <activity android:name=".activity.HistoryActivity"/>
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="Cf5Qm5UcGb3OwwyWqEGbqThtlGwTMd8L" />
+        <!--地图-->
+        <activity android:name=".activity.MapActivity"/>
+        <!--画布-->
+        <activity android:name=".activity.DrawActivity"/>
     </application>
 
 </manifest>

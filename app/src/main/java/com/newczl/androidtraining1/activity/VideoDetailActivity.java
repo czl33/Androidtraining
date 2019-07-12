@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
@@ -18,8 +19,11 @@ import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.newczl.androidtraining1.DB.Bean.Star;
+import com.newczl.androidtraining1.DB.starDB;
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.adapter.MyFragmentStatePagerAdapter;
+import com.newczl.androidtraining1.bean.User;
 import com.newczl.androidtraining1.bean.mSurfaceView;
 import com.newczl.androidtraining1.bean.mText;
 import com.newczl.androidtraining1.fragment.BaseFragment;
@@ -38,9 +42,12 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
+import cn.bmob.v3.BmobUser;
 import es.dmoral.toasty.Toasty;
 
 public class VideoDetailActivity extends BaseWebViewActivity {
+
+    private starDB stardb;//数据库
     SampleCoverVideo detailPlayer;//播放器
 
     private boolean isPlay;//是否播放
@@ -50,6 +57,7 @@ public class VideoDetailActivity extends BaseWebViewActivity {
     private ImageView loveimg;//爱心图片
 
     private boolean iscollect;//是否收藏
+
     private EditText edit_danmu;//弹幕输入框
     private ImageView send;//发送按钮
     private GSYVideoOptionBuilder gsyVideoOption;//配置选项
@@ -58,6 +66,7 @@ public class VideoDetailActivity extends BaseWebViewActivity {
     private mSurfaceView msurfaceView;//弹幕屏幕
     private String[] strings={"6666","77777"};
     private int[] colors={Color.WHITE,Color.MAGENTA,Color.CYAN,Color.RED,Color.BLUE,Color.GREEN};
+    private User currentUser;//用户
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +79,12 @@ public class VideoDetailActivity extends BaseWebViewActivity {
 
 
         setContentView(R.layout.activity_video_detail);
+        stardb = new starDB(this,"star.db");//数据库
+        stardb.open();//开启数据库
+
+
+
+
         isShow=true;//禁止使用toolbar
 
 
@@ -84,7 +99,12 @@ public class VideoDetailActivity extends BaseWebViewActivity {
 
 
         detailPlayer =findViewById(R.id.detail_player);
+
         loveimg = detailPlayer.imageView;//找到爱心图片
+
+
+
+
         msurfaceView=detailPlayer.mSurfaceView;//赋值传递一下
         msurfaceView.bringToFront();//置顶
 
@@ -102,7 +122,18 @@ public class VideoDetailActivity extends BaseWebViewActivity {
 
         //增加title
         detailPlayer.getTitleTextView().setVisibility(View.VISIBLE);
-        String titleName=intent.getStringExtra("videoName");//找到名字
+        final String titleName=intent.getStringExtra("videoName");//找到名字
+        currentUser = BmobUser.getCurrentUser(User.class);//得到用户
+       // Log.i("DBtest", "onCreate: "+stardb.queryVidByName(titleName,currentUser.getUsername()).getCount());
+
+        if(stardb.queryVidByName(titleName,currentUser.getUsername()).getCount()!=0){
+            iscollect=true;
+            loveimg.setImageResource(R.drawable.ic_loveed);
+        }else{
+            iscollect=false;//没有收藏
+        }
+
+
 
         detailPlayer.getBackButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,11 +202,20 @@ public class VideoDetailActivity extends BaseWebViewActivity {
             @Override
             public void click() {
                 if(!iscollect){
-                    Toasty.info(detailPlayer.getContext(),"收藏成功", Toast.LENGTH_SHORT).show();
-                    loveimg.setImageResource(R.drawable.ic_loveed);//替换图片
-                    iscollect=true;
+                    if(BmobUser.isLogin()){
+
+                        Star star=new Star(titleName,"--",currentUser.getUsername(),0,Star.VIDEO);
+                        stardb.insert(star);
+                        loveimg.setImageResource(R.drawable.ic_loveed);//替换图片
+                        iscollect=true;
+                        Toasty.info(detailPlayer.getContext(),"收藏成功", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toasty.error(detailPlayer.getContext(),"请先登录！", Toast.LENGTH_SHORT).show();
+                    }
+
                 }else{
                     Toasty.info(detailPlayer.getContext(),"取消收藏", Toast.LENGTH_SHORT).show();
+
                     loveimg.setImageResource(R.drawable.ic_love);//替换图片
                     iscollect=false;
                 }
@@ -216,13 +256,17 @@ public class VideoDetailActivity extends BaseWebViewActivity {
     @Override
     protected void onPause() {
         detailPlayer.getCurrentPlayer().onVideoPause();
+
         super.onPause();
         isPause = true;
+        stardb.close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        stardb = new starDB(this,"star.db");//数据库
+        stardb.open();//开启数据库
         detailPlayer.getCurrentPlayer().onVideoResume(false);
         isPause = false;
     }
@@ -298,5 +342,7 @@ public class VideoDetailActivity extends BaseWebViewActivity {
             }
         }).start();
     }
+
+
 
 }

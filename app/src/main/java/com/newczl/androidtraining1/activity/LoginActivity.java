@@ -239,6 +239,10 @@ public class LoginActivity extends BaseWebViewActivity {
             if (data != null) {
                 //Intent stq=data;
                 //并结束自身
+                Intent data1 = new Intent();
+                User user1 = BmobUser.getCurrentUser(User.class);
+                data.putExtra("isLogin", true);
+                data.putExtra("userName", user1.getUsername());
                 setResult(RESULT_OK, data);
                 LoginActivity.this.finish();
 

@@ -1,13 +1,17 @@
 package com.newczl.androidtraining1.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.newczl.androidtraining1.R;
 import com.newczl.androidtraining1.adapter.MyFragmentStatePagerAdapter;
@@ -17,6 +21,7 @@ import com.newczl.androidtraining1.fragment.HomeFragment;
 import com.newczl.androidtraining1.fragment.MeFragment;
 import com.newczl.androidtraining1.fragment.VideoFragment;
 import com.newczl.androidtraining1.view.MainViewPager;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.ArrayList;
 /**
@@ -24,8 +29,11 @@ import java.util.ArrayList;
  * author:czl
  */
 public class MainActivity extends BaseActivity {
+    public static final int REQUEST_CODE_SCAN = 0x1234;
     private MainViewPager viewPager;//Fragment的切换
     private BottomNavigationView navigation;//底部导航栏
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +93,33 @@ public class MainActivity extends BaseActivity {
         overridePendingTransition(0, R.anim.anim_fade_out);//结束的动画
     }
 
-
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CODE_SCAN){
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    Toast.makeText(MainActivity.this, "解析结果:" + result, Toast.LENGTH_LONG).show();
+                    if(result!=null) {
+                        if (result.contains("www") || result.toLowerCase().contains("http") ) {
+                            Intent intent=new Intent(MainActivity.this, NewsDetailActivity.class);
+                            if(result.contains("http") || result.contains("Http")){
+                                intent.putExtra("url",result);
+                            }else{
+                                intent.putExtra("url","http://"+result);
+                            }
+                            startActivity(intent);
+                        }
+                    }
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    Toast.makeText(MainActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
 }

@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <include layout="@layout/toolbar_1"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <com.newczl.androidtraining1.view.PaintView
+            android:id="@+id/activity_paint_pv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/activity_paint_undo"-->
+
+            <!--android:text="撤销"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/activity_paint_redo"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:text="恢复" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/activity_paint_color"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:text="红色" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/activity_paint_clear"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:text="清空" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/activity_paint_eraser"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:text="橡皮擦" />-->
+
+        <!--<TextView-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:id="@+id/activity_paint_save"-->
+            <!--android:text="保存" />-->
+
+    <!--</LinearLayout>-->
+</LinearLayout>

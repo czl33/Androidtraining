@@ -118,7 +118,6 @@ public class mSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
                 break;
             }
 
-
             //遍历弹幕集合
             for (int i = 0; i < Barrages.size(); i++) {
                 mtext=Barrages.get(i);
@@ -137,7 +136,7 @@ public class mSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
                 //绘制文本
                 canvas.drawText(mtext.getText(),mtext.getX(),mtext.getY(),paint);
                 //如果弹幕超出屏幕左侧，则从集合中删除，否则进行移动
-                if (mtext.getX()<-getWidth()){
+                if (mtext.getX()< -getWidth()){
                     Barrages.remove(mtext);
                 }else {
                     mtext.setX((mtext.getX()-mtext.getSpeed()));

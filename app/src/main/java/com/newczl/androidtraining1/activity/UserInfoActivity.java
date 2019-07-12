@@ -4,12 +4,15 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 
 import com.kongzue.dialog.interfaces.OnInputDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
@@ -183,6 +186,7 @@ public class UserInfoActivity extends BaseWebViewActivity {
         if(resultCode!=RESULT_CANCELED){
             if(requestCode==REQUEST_CODE_TAKE_PHOTO){//找照片
                 String s= PickerManager.INSTANCE.getSelectedPhotos().get(0);
+                Log.i("filesw2", "onActivityResult: "+s);
                 ImgUtils.setImage(this,s,circleImageView);//直接绑定至圆角图片上
                 final BmobFile bmobFile=new BmobFile(new File(s));
                 bmobFile.upload(new UploadFileListener() {
@@ -270,6 +274,19 @@ public class UserInfoActivity extends BaseWebViewActivity {
 
     @Override
     protected void menuHandle() {//实例化菜单
+        toolbar.inflateMenu(R.menu.qr_code);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId()==R.id.qrcode){
+                    //
+                    //Toasty.info(UserInfoActivity.this,"生成",Toasty.LENGTH_SHORT).show();
+                    Intent intent=new Intent(UserInfoActivity.this,QrActivity.class);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
 
     }
 }
